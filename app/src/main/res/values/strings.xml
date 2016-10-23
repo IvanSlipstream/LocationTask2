@@ -29,5 +29,8 @@
     <string name="hint_touch_the_location">Touch the location</string>
     <string name="location_default_name">new Location</string>
     <string name="task_completed">+</string>
+    <string name="add_task">Add Task</string>
+    <string name="title_activity_task">Tasks</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 
 </resources>

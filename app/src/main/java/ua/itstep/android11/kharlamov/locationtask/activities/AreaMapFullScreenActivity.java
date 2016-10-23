@@ -1,6 +1,7 @@
 package ua.itstep.android11.kharlamov.locationtask.activities;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -17,7 +18,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,20 +30,18 @@ import java.util.Locale;
 import ua.itstep.android11.kharlamov.locationtask.R;
 import ua.itstep.android11.kharlamov.locationtask.db.DbHelper;
 import ua.itstep.android11.kharlamov.locationtask.fragments.LocationSaveDialogFragment;
+import ua.itstep.android11.kharlamov.locationtask.fragments.TaskListLocationFragment;
 import ua.itstep.android11.kharlamov.locationtask.models.AreaMap;
 import ua.itstep.android11.kharlamov.locationtask.models.Location;
 import ua.itstep.android11.kharlamov.locationtask.provider.LocationTaskContentProvider;
 import ua.itstep.android11.kharlamov.locationtask.services.LocationTaskIntentService;
 import ua.itstep.android11.kharlamov.locationtask.views.LocationView;
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
 public class AreaMapFullScreenActivity extends AppCompatActivity
         implements View.OnTouchListener,
         LoaderManager.LoaderCallbacks<Cursor>,
-        LocationSaveDialogFragment.OnFragmentInteractionListener {
+        LocationSaveDialogFragment.OnFragmentInteractionListener,
+        TaskListLocationFragment.OnFragmentInteractionListener {
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -57,6 +55,7 @@ public class AreaMapFullScreenActivity extends AppCompatActivity
     private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
 
     private static final String KEY_AREA_MAP_ID = "area_map_id";
+    public static final String KEY_LOCATION_ID = "location_id";
     private static final int BACKGROUND_LOADER_ID = 1;
     /**
      * Some older devices needs a small delay between UI widget updates
@@ -64,6 +63,7 @@ public class AreaMapFullScreenActivity extends AppCompatActivity
      */
     private static final int UI_ANIMATION_DELAY = 300;
     private static final String TAG_DIALOG = "dialog";
+    private static final String TAG_TASK_LIST = "task_list";
     private final Handler mHideHandler = new Handler();
     private ImageView mContentView;
     private TextView mTvOverlay;
@@ -183,6 +183,9 @@ public class AreaMapFullScreenActivity extends AppCompatActivity
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     Log.d("test", "clicked " + String.valueOf(((LocationView) view).getModelId()));
+                    Intent intent = new Intent(view.getContext(), TaskActivity.class);
+                    intent.putExtra(KEY_LOCATION_ID, location.getId());
+                    startActivity(intent);
                     return true;
                 } else {
                     return false;

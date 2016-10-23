@@ -3,7 +3,10 @@
     package="ua.itstep.android11.kharlamov.locationtask">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-feature android:name="android.hardware.camera2" android:required="false"/>
+
+    <uses-feature
+        android:name="android.hardware.camera2"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -39,9 +42,8 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
+                android:resource="@xml/file_paths" />
         </provider>
-
 
         <activity
             android:name=".activities.AreaMapFullScreenActivity"
@@ -53,6 +55,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ua.itstep.android11.kharlamov.locationtask.activities.MainActivity" />
         </activity>
+        <activity
+            android:name=".activities.TaskActivity"
+            android:label="@string/title_activity_task"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

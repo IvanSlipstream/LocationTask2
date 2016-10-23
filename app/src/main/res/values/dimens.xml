@@ -8,4 +8,5 @@
     <dimen name="default_inner_padding">2dp</dimen>
     <dimen name="location_view_text_size">20sp</dimen>
     <dimen name="et_width_for_area_map">65sp</dimen>
+    <dimen name="appbar_padding_top">8dp</dimen>
 </resources>
