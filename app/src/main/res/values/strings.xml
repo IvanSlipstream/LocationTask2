@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Location Task</string>
+    <string name="action_settings">Settings</string>
+    <string name="area_map_placeholder">Area Map</string>
+    <string name="thumbnail_area_map_placeholder">No image available</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="no_preview_available">No preview available</string>
+    <string name="brief_description_hint">Enter brief description</string>
+    <string name="area_width_hint">Area real width</string>
+    <string name="area_height_hint">Area real height</string>
+    <string name="area_floor_hint">Floor</string>
+    <string name="confirm_image_for_area_map">Use this image as area map?</string>
+    <string name="cancel">Cancel</string>
+    <string name="accept">Accept</string>
+    <string name="area_load_preview_dialog_description">Preview</string>
+    <string name="properties_area_map">%1$d x %2$d, %3$d floor</string>
+    <string name="properties_area_map_no_floor">%1$d x %2$d</string>
+    <string name="saving_area_map_failure">Saving Area Map failure</string>
+
+    <string name="title_activity_area_map_full_screen">AreaMapFullScreenActivity</string>
+    <string name="add_location_to_area">Add Location</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="take_picture">Take picture</string>
+    <string name="area_map_fullscreen_placeholder">Area Map</string>
+    <string name="select_image">Select Image</string>
+    <string name="confirm_create_new_location">Create new location?</string>
+    <string name="hint_touch_the_location">Touch the location</string>
+    <string name="location_default_name">new Location</string>
+    <string name="task_completed">+</string>
+
+</resources>
