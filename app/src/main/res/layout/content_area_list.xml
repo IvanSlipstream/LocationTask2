@@ -5,6 +5,6 @@
     android:name="ua.itstep.android11.kharlamov.locationtask.fragments.AreaListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="end|bottom"
+    android:layout_gravity="end|top"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:layout="@layout/fragment_area_list" />

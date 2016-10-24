@@ -21,4 +21,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <EditText
+        android:id="@+id/et_new_task_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:hint="@string/enter_new_task_name"
+        android:visibility="gone" />
+
 </LinearLayout>

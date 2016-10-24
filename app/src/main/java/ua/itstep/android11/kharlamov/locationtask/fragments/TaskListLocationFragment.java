@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -35,6 +36,7 @@ public class TaskListLocationFragment extends Fragment {
     private static final String KEY_LOCATION_ID = "location_id";
     private RecyclerView mRvTaskList;
     private TaskAdapter mAdapter;
+    private EditText mEtNewTaskName;
     private long mLocationId;
     private OnFragmentInteractionListener mListener;
 
@@ -73,6 +75,7 @@ public class TaskListLocationFragment extends Fragment {
         mRvTaskList = (RecyclerView) view.findViewById(R.id.rv_task_list);
         mRvTaskList.setLayoutManager(new LinearLayoutManager(getContext()));
         mRvTaskList.setAdapter(mAdapter);
+        mEtNewTaskName = (EditText) view.findViewById(R.id.et_new_task_name);
         return view;
     }
 
@@ -81,6 +84,19 @@ public class TaskListLocationFragment extends Fragment {
         mAdapter = adapter;
         if (mRvTaskList != null) {
             mRvTaskList.swapAdapter(adapter, false);
+        }
+    }
+
+    public void renderNewTaskEditText (boolean show) {
+        assert mEtNewTaskName != null;
+        mEtNewTaskName.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    public String getNewTaskName() {
+        if (mEtNewTaskName != null && mEtNewTaskName.getText().length() > 0) {
+            return String.valueOf(mEtNewTaskName.getText());
+        } else {
+            return getString(R.string.task_default_name);
         }
     }
 

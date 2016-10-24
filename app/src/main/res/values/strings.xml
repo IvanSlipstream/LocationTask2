@@ -32,5 +32,7 @@
     <string name="add_task">Add Task</string>
     <string name="title_activity_task">Tasks</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="enter_new_task_name">Enter a new task name</string>
+    <string name="task_default_name">New Task</string>
 
 </resources>

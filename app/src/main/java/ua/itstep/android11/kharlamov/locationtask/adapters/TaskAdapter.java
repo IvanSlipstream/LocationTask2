@@ -37,7 +37,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TasksLocationViewHolder> {
     public void onBindViewHolder(TasksLocationViewHolder holder, int position) {
         Task task = mTaskList.get(position);
         holder.mTvDescription.setText(task.getDescription());
-        holder.mIvCompleted.setImageResource(task.getStatus() == 0 ? R.mipmap.ic_not_completed : R.mipmap.ic_completed);
+        holder.mIvCompleted.setImageResource(task.getStatus() == Task.NOT_COMPLETED ?
+                R.mipmap.ic_not_completed : R.mipmap.ic_completed);
         TaskLocationRelation relation = task.getTaskLocationRelation();
         if (relation != null) {
             holder.mRbRating.setRating(relation.getRating());

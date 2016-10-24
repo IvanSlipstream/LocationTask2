@@ -12,6 +12,9 @@ import ua.itstep.android11.kharlamov.locationtask.db.DbHelper;
  */
 public class Task implements Parcelable {
 
+    public static final int NOT_COMPLETED = 0;
+    public static final int COMPLETED = 1;
+
     private int mStatus;
     private String mDescription;
     private long mId = -1;

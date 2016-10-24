@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         registerContentObserverForAreaMaps();
-        getSupportLoaderManager().initLoader(LOADER_ID_IMAGE_LIST, null, this);
+        getSupportLoaderManager().restartLoader(LOADER_ID_IMAGE_LIST, null, this);
     }
 
     private void registerContentObserverForAreaMaps() {
@@ -295,6 +295,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         Log.d(LOG_TAG, String.format("Loader #%d is reset", loader.getId()));
+        restartLoaderAreaMaps();
     }
 
     @Override

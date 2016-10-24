@@ -3,6 +3,7 @@ package ua.itstep.android11.kharlamov.locationtask.activities;
 import android.content.ContentUris;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.ResultReceiver;
@@ -44,6 +45,8 @@ public class TaskActivity extends AppCompatActivity
 
     private static int TASK_LOADER_ID = 1;
 
+    private boolean mIssuedAddNewTask = false;
+
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private TaskListLocationFragment mTaskListLocationFragment;
     private final ContentObserver mObserver = new ContentObserver(new Handler()) {
@@ -79,16 +82,32 @@ public class TaskActivity extends AppCompatActivity
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        final ResultReceiver receiver = new ResultReceiver(new Handler());
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final ResultReceiver receiver = new ResultReceiver(new Handler()){
+            @Override
+            protected void onReceiveResult(int resultCode, Bundle resultData) {
+                if (resultCode == LocationTaskIntentService.RESULT_CODE_INSERTED_TASK && resultData != null) {
+                    mTaskListLocationFragment.renderNewTaskEditText(false);
+                    mIssuedAddNewTask = false;
+                    fab.setImageResource(R.mipmap.ic_add_item);
+                }
+            }
+        };
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TaskLocationRelation relation = new TaskLocationRelation(3, mLocationId);
-                Task task = new Task(0, "new test task");
-                task.setTaskLocationRelation(relation);
-                LocationTaskIntentService.startActionCreateTask(view.getContext(),
-                        task, receiver);
+                if (mIssuedAddNewTask) {
+                    TaskLocationRelation relation = new TaskLocationRelation(0, mLocationId);
+                    String taskName = mTaskListLocationFragment.getNewTaskName();
+                    Task task = new Task(Task.NOT_COMPLETED, taskName);
+                    task.setTaskLocationRelation(relation);
+                    LocationTaskIntentService.startActionCreateTask(view.getContext(),
+                            task, receiver);
+                } else {
+                    mTaskListLocationFragment.renderNewTaskEditText(true);
+                    mIssuedAddNewTask = true;
+                    fab.setImageResource(R.mipmap.ic_save_item);
+                }
             }
         });
 
