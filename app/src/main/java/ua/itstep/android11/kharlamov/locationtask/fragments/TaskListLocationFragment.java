@@ -98,18 +98,18 @@ public class TaskListLocationFragment extends Fragment {
                 null, null, null, null);
         if (outerCursor != null) {
             while (outerCursor.moveToNext()){
-                Task task = new Task(outerCursor);
-                long id = task.getId();
-                Cursor innerCursor = getContext().getContentResolver().query(LocationTaskContentProvider.URI_ALL_TASKS_LOCATIONS,
-                        null, String.format(Locale.getDefault(), "%s=%d", DbHelper.TasksLocationsFields.TASK_ID, id),
+                TaskLocationRelation relation = new TaskLocationRelation(outerCursor);
+                long id = relation.getTaskId();
+                Cursor innerCursor = getContext().getContentResolver().query(LocationTaskContentProvider.URI_ALL_TASKS,
+                        null, String.format(Locale.getDefault(), "%s=%d", DbHelper._ID, id),
                         null, null);
                 if (innerCursor != null) {
                     innerCursor.moveToFirst();
-                    TaskLocationRelation relation = new TaskLocationRelation(innerCursor);
+                    Task task = new Task(innerCursor);
                     task.setTaskLocationRelation(relation);
                     innerCursor.close();
+                    taskList.add(task);
                 }
-                taskList.add(task);
             }
             outerCursor.close();
         }
