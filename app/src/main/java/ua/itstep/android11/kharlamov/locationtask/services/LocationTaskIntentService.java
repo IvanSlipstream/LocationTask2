@@ -205,6 +205,7 @@ public class LocationTaskIntentService extends IntentService {
         Bundle bundle = new Bundle();
         bundle.putLong(RESULT_ID_KEY, id);
         if (relation != null) {
+            relation.setTaskId(id);
             cv = relation.makeContentValues();
             uri = getContentResolver().insert(LocationTaskContentProvider.URI_ALL_TASKS_LOCATIONS, cv);
             id = ContentUris.parseId(uri);

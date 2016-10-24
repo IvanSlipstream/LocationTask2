@@ -77,8 +77,11 @@ public class TaskListLocationFragment extends Fragment {
         mBtnAddTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                TaskLocationRelation relation = new TaskLocationRelation(3, mLocationId);
+                Task task = new Task(0, "new test task");
+                task.setTaskLocationRelation(relation);
                 LocationTaskIntentService.startActionCreateTask(view.getContext(),
-                        new Task(0, "new test task"), receiver);
+                        task, receiver);
             }
         });
         return view;

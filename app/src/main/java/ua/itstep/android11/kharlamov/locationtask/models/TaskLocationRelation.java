@@ -24,6 +24,11 @@ public class TaskLocationRelation implements Parcelable {
         this.mId = in.readLong();
     }
 
+    public TaskLocationRelation(int rating, long locationId) {
+        this.mRating = rating;
+        this.mLocationId = locationId;
+    }
+
     public TaskLocationRelation(Cursor c) {
         this.mId = c.getLong(c.getColumnIndex(DbHelper._ID));
         this.mLocationId = c.getLong(c.getColumnIndex(DbHelper.TasksLocationsFields.LOCATION_ID));
@@ -66,6 +71,10 @@ public class TaskLocationRelation implements Parcelable {
 
     public void setId(long id) {
         this.mId = id;
+    }
+
+    public void setTaskId(long taskId) {
+        this.mTaskId = taskId;
     }
 
     public long getLocationId() {

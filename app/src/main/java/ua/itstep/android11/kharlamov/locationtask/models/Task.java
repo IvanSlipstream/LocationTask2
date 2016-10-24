@@ -26,7 +26,6 @@ public class Task implements Parcelable {
     public Task(Cursor c){
         this.mDescription = c.getString(c.getColumnIndex(DbHelper.TaskFields.DESCRIPTION));
         this.mStatus = c.getInt(c.getColumnIndex(DbHelper.TaskFields.STATUS));
-        this.mId = c.getLong(c.getColumnIndex(DbHelper.TaskFields.STATUS));
     }
 
     public ContentValues makeContentValues() {
