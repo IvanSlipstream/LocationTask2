@@ -34,8 +34,8 @@ public class TaskListLocationFragment extends Fragment {
 
     private static final String KEY_LOCATION_ID = "location_id";
     private RecyclerView mRvTaskList;
+    private TaskAdapter mAdapter;
     private long mLocationId;
-    private Button mBtnAddTask;
     private OnFragmentInteractionListener mListener;
 
     public static TaskListLocationFragment newInstance(long locationId) {
@@ -72,48 +72,16 @@ public class TaskListLocationFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_task_list, container, false);
         mRvTaskList = (RecyclerView) view.findViewById(R.id.rv_task_list);
         mRvTaskList.setLayoutManager(new LinearLayoutManager(getContext()));
-        mBtnAddTask = (Button) view.findViewById(R.id.btn_add_task);
-        final ResultReceiver receiver = new ResultReceiver(new Handler());
-        mBtnAddTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TaskLocationRelation relation = new TaskLocationRelation(3, mLocationId);
-                Task task = new Task(0, "new test task");
-                task.setTaskLocationRelation(relation);
-                LocationTaskIntentService.startActionCreateTask(view.getContext(),
-                        task, receiver);
-            }
-        });
+        mRvTaskList.setAdapter(mAdapter);
         return view;
     }
 
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        // TODO make async
-        Uri uri = ContentUris.withAppendedId(LocationTaskContentProvider.URI_ALL_TASKS_IN_LOCATION, mLocationId);
-        ArrayList<Task> taskList = new ArrayList<>();
-        Cursor outerCursor = getContext().getContentResolver().query(uri,
-                null, null, null, null);
-        if (outerCursor != null) {
-            while (outerCursor.moveToNext()){
-                TaskLocationRelation relation = new TaskLocationRelation(outerCursor);
-                long id = relation.getTaskId();
-                Cursor innerCursor = getContext().getContentResolver().query(LocationTaskContentProvider.URI_ALL_TASKS,
-                        null, String.format(Locale.getDefault(), "%s=%d", DbHelper._ID, id),
-                        null, null);
-                if (innerCursor != null) {
-                    innerCursor.moveToFirst();
-                    Task task = new Task(innerCursor);
-                    task.setTaskLocationRelation(relation);
-                    innerCursor.close();
-                    taskList.add(task);
-                }
-            }
-            outerCursor.close();
+    public void setTaskList(ArrayList<Task> taskList) {
+        TaskAdapter adapter = new TaskAdapter(taskList);
+        mAdapter = adapter;
+        if (mRvTaskList != null) {
+            mRvTaskList.swapAdapter(adapter, false);
         }
-        mRvTaskList.setAdapter(new TaskAdapter(taskList));
     }
 
     public interface OnFragmentInteractionListener{

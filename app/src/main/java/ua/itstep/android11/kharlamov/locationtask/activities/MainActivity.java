@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements
         public void onChange(boolean selfChange, Uri uri) {
             restartLoaderAreaMaps();
         }
-    };;
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportLoaderManager().initLoader(LOADER_ID_IMAGE_LIST, null, this);
         mReceiver = new ResultReceiver(new Handler()){
             @Override
             protected void onReceiveResult(int resultCode, Bundle resultData) {
@@ -99,12 +98,6 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         };
-//        LocationView locationView = new LocationView(this, null);
-//        addContentView(locationView, new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-//        locationView.setX(100);
-//        locationView.setY(200);
-//        locationView.drawText("23", 50);
-        registerContentObserverForAreaMaps();
         final FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.addOnBackStackChangedListener(this);
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -121,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
         registerContentObserverForAreaMaps();
+        getSupportLoaderManager().initLoader(LOADER_ID_IMAGE_LIST, null, this);
     }
 
     private void registerContentObserverForAreaMaps() {

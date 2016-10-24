@@ -1,7 +1,15 @@
 package ua.itstep.android11.kharlamov.locationtask.activities;
 
+import android.content.ContentUris;
+import android.database.ContentObserver;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -10,6 +18,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,20 +27,39 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Locale;
+
 import ua.itstep.android11.kharlamov.locationtask.R;
+import ua.itstep.android11.kharlamov.locationtask.db.DbHelper;
 import ua.itstep.android11.kharlamov.locationtask.fragments.TaskListLocationFragment;
+import ua.itstep.android11.kharlamov.locationtask.models.Task;
+import ua.itstep.android11.kharlamov.locationtask.models.TaskLocationRelation;
+import ua.itstep.android11.kharlamov.locationtask.provider.LocationTaskContentProvider;
+import ua.itstep.android11.kharlamov.locationtask.services.LocationTaskIntentService;
 
 public class TaskActivity extends AppCompatActivity
-        implements TaskListLocationFragment.OnFragmentInteractionListener{
+        implements LoaderManager.LoaderCallbacks<ArrayList<Task>>,
+        TaskListLocationFragment.OnFragmentInteractionListener{
+
+    private static int TASK_LOADER_ID = 1;
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private TaskListLocationFragment mTaskListLocationFragment;
+    private final ContentObserver mObserver = new ContentObserver(new Handler()) {
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            restartLoaderTasks();
+        }
+    };
 
     /**
+
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-    private long mLocationId = -1;
 
+    private long mLocationId = -1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +69,7 @@ public class TaskActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         mLocationId = getIntent().getLongExtra(AreaMapFullScreenActivity.KEY_LOCATION_ID, -1);
+        mTaskListLocationFragment = TaskListLocationFragment.newInstance(mLocationId);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -51,10 +80,15 @@ public class TaskActivity extends AppCompatActivity
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final ResultReceiver receiver = new ResultReceiver(new Handler());
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                TaskLocationRelation relation = new TaskLocationRelation(3, mLocationId);
+                Task task = new Task(0, "new test task");
+                task.setTaskLocationRelation(relation);
+                LocationTaskIntentService.startActionCreateTask(view.getContext(),
+                        task, receiver);
             }
         });
 
@@ -63,6 +97,14 @@ public class TaskActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        registerContentObserverForTasks();
+        getSupportLoaderManager().initLoader(TASK_LOADER_ID, null, this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterContentObserverForTasks();
     }
 
     @Override
@@ -85,6 +127,69 @@ public class TaskActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void registerContentObserverForTasks() {
+        getContentResolver().registerContentObserver(LocationTaskContentProvider.URI_ALL_TASKS, true, mObserver);
+    }
+
+    private void unregisterContentObserverForTasks() {
+        getContentResolver().unregisterContentObserver(mObserver);
+    }
+
+    private void restartLoaderTasks() {
+        getSupportLoaderManager().restartLoader(TASK_LOADER_ID, null, this);
+    }
+
+    @Override
+    public Loader<ArrayList<Task>> onCreateLoader(int id, Bundle args) {
+        if (id == TASK_LOADER_ID) {
+            return new AsyncTaskLoader<ArrayList<Task>>(this) {
+                @Override
+                protected void onStartLoading() {
+                    forceLoad();
+                }
+
+                @Override
+                public ArrayList<Task> loadInBackground() {
+                    Uri uri = ContentUris.withAppendedId(LocationTaskContentProvider.URI_ALL_TASKS_IN_LOCATION, mLocationId);
+                    ArrayList<Task> taskList = new ArrayList<>();
+                    Cursor outerCursor = getContext().getContentResolver().query(uri,
+                            null, null, null, null);
+                    if (outerCursor != null) {
+                        while (outerCursor.moveToNext()){
+                            TaskLocationRelation relation = new TaskLocationRelation(outerCursor);
+                            long id = relation.getTaskId();
+                            Cursor innerCursor = getContext().getContentResolver().query(LocationTaskContentProvider.URI_ALL_TASKS,
+                                    null, String.format(Locale.getDefault(), "%s=%d", DbHelper._ID, id),
+                                    null, null);
+                            if (innerCursor != null) {
+                                innerCursor.moveToFirst();
+                                Task task = new Task(innerCursor);
+                                task.setTaskLocationRelation(relation);
+                                innerCursor.close();
+                                taskList.add(task);
+                            }
+                        }
+                        outerCursor.close();
+                    }
+                    return taskList;
+                }
+            };
+        }
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<ArrayList<Task>> loader, ArrayList<Task> data) {
+        if (loader.getId() == TASK_LOADER_ID) {
+            mTaskListLocationFragment.setTaskList(data);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<ArrayList<Task>> loader) {
+        Log.d("test", String.format("Loader #%d is reset", loader.getId()));
     }
 
     /**
@@ -132,7 +237,7 @@ public class TaskActivity extends AppCompatActivity
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return TaskListLocationFragment.newInstance(mLocationId);
+                    return mTaskListLocationFragment;
                 case 1:
                     return PlaceholderFragment.newInstance(1);
             }

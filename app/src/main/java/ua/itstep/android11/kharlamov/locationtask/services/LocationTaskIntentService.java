@@ -1,6 +1,7 @@
 package ua.itstep.android11.kharlamov.locationtask.services;
 
 import android.app.IntentService;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -253,13 +254,14 @@ public class LocationTaskIntentService extends IntentService {
 
     private void handleActionLoadAllLocationsInArea(AreaMap areaMap, ResultReceiver receiver) {
         Uri uri = ContentUris.withAppendedId(LocationTaskContentProvider.URI_ALL_LOCATIONS_IN_AREA, areaMap.getId());
-        Cursor areaLocationsCursor = getContentResolver().query(uri, null, null, null, null);
+        ContentResolver resolver = getContentResolver();
+        Cursor areaLocationsCursor = resolver.query(uri, null, null, null, null);
         if (areaLocationsCursor != null) {
             while (areaLocationsCursor.moveToNext()){
                 int count = 0;
                 Location location = new Location(areaLocationsCursor);
-                Cursor taskCountCursor = getContentResolver().query(LocationTaskContentProvider.URI_ALL_LOCATIONS_WITH_TASK_COUNT,
-                        null, String.format(Locale.getDefault(), "%s=%d", DbHelper._ID, location.getId()),
+                Cursor taskCountCursor = resolver.query(LocationTaskContentProvider.URI_ALL_LOCATIONS_WITH_TASK_COUNT,
+                        null, String.format(Locale.getDefault(), "%s=%d", DbHelper.TasksLocationsFields.LOCATION_ID, location.getId()),
                         null, null);
                 if (taskCountCursor != null) {
                     if (taskCountCursor.moveToFirst()) {

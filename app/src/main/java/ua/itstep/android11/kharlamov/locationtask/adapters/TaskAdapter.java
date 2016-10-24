@@ -40,7 +40,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TasksLocationViewHolder> {
         holder.mIvCompleted.setImageResource(task.getStatus() == 0 ? R.mipmap.ic_not_completed : R.mipmap.ic_completed);
         TaskLocationRelation relation = task.getTaskLocationRelation();
         if (relation != null) {
-            holder.mRbRating.setNumStars(relation.getRating());
+            holder.mRbRating.setRating(relation.getRating());
         }
     }
 

@@ -33,7 +33,7 @@ public class LocationTaskContentProvider extends ContentProvider {
     private static final String SUFFIX_ALL_LOCATIONS = "/all_locations";
     private static final String SUFFIX_ALL_TASKS = "/all_tasks";
     private static final String SUFFIX_ALL_LOCATIONS_IN_AREA = "/all_locations_in_area";
-    private static final String SUFFIX_ALL_LOCATIONS_WITH_TASK_COUNT = "all_locations_with_task_count";
+    private static final String SUFFIX_ALL_LOCATIONS_WITH_TASK_COUNT = "/all_locations_with_task_count";
     private static final String SUFFIX_ALL_TASKS_IN_LOCATION = "/all_tasks_in_location";
     private static final String SUFFIX_ALL_TASKS_LOCATIONS = "/all_tasks_locations";
 

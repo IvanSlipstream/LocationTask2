@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
+import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.CursorLoader;
@@ -144,6 +145,7 @@ public class AreaMapFullScreenActivity extends AppCompatActivity
         mLocationViewList = new ArrayList<>();
         Bundle loaderBundle = new Bundle();
         loaderBundle.putLong(KEY_AREA_MAP_ID, mAreaMapId);
+        // load background image
         getSupportLoaderManager().initLoader(BACKGROUND_LOADER_ID, loaderBundle, this);
 
         // Set up the user interaction to manually show or hide the system UI.
@@ -184,7 +186,7 @@ public class AreaMapFullScreenActivity extends AppCompatActivity
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     Log.d("test", "clicked " + String.valueOf(((LocationView) view).getModelId()));
                     Intent intent = new Intent(view.getContext(), TaskActivity.class);
-                    intent.putExtra(KEY_LOCATION_ID, location.getId());
+                    intent.putExtra(KEY_LOCATION_ID, ((LocationView) view).getModelId());
                     startActivity(intent);
                     return true;
                 } else {
@@ -199,6 +201,7 @@ public class AreaMapFullScreenActivity extends AppCompatActivity
         Toast.makeText(this, error, Toast.LENGTH_LONG).show();
     }
 
+    @Nullable
     private View findViewByLocationId(long id){
         for (LocationView locationView: mLocationViewList){
             if (locationView.getModelId() == id) {
@@ -333,6 +336,7 @@ public class AreaMapFullScreenActivity extends AppCompatActivity
         Log.d("test", String.format("Loader #%d is reset", loader.getId()));
     }
 
+    // called when dialog is dismissed
     @Override
     public void onDismiss() {
         LocationView view = (LocationView) findViewByLocationId(-1);
@@ -344,6 +348,7 @@ public class AreaMapFullScreenActivity extends AppCompatActivity
         }
     }
 
+    // removes grey overlay view
     @Override
     public void onBackPressed() {
         if (mAddLocationIssued && mTvOverlay != null) {
