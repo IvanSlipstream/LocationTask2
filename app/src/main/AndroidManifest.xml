@@ -58,7 +58,8 @@
         <activity
             android:name=".activities.TaskActivity"
             android:label="@string/title_activity_task"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustResize"/>
     </application>
 
 </manifest>

@@ -19,7 +19,7 @@
     <string name="properties_area_map_no_floor">%1$d x %2$d</string>
     <string name="saving_area_map_failure">Saving Area Map failure</string>
 
-    <string name="title_activity_area_map_full_screen">AreaMapFullScreenActivity</string>
+    <string name="title_activity_area_map_full_screen">Map of the Area</string>
     <string name="add_location_to_area">Add Location</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="take_picture">Take picture</string>
