@@ -55,6 +55,8 @@ public class LocationTaskContentProvider extends ContentProvider {
         sUriMatcher.addURI(URI_AUTHORITY, SUFFIX_ALL_LOCATIONS_IN_AREA+"/#", CODE_ALL_LOCATIONS_IN_AREA);
         sUriMatcher.addURI(URI_AUTHORITY, SUFFIX_ALL_LOCATIONS_WITH_TASK_COUNT, CODE_ALL_LOCATIONS_WITH_TASK_COUNT);
         sUriMatcher.addURI(URI_AUTHORITY, SUFFIX_ALL_TASKS_IN_LOCATION+"/#", CODE_ALL_TASKS_IN_LOCATION);
+        sUriMatcher.addURI(URI_AUTHORITY, SUFFIX_ALL_TASKS+"/#", CODE_ALL_TASKS);
+        sUriMatcher.addURI(URI_AUTHORITY, SUFFIX_ALL_TASKS_LOCATIONS+"/#", CODE_ALL_TASKS_LOCATIONS);
     }
 
     public LocationTaskContentProvider() {
@@ -153,10 +155,30 @@ public class LocationTaskContentProvider extends ContentProvider {
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection,
+    public int update(@NonNull Uri uri, ContentValues values, String selection,
                       String[] selectionArgs) {
-        // TODO: Implement this to handle requests to update one or more rows.
-        throw new UnsupportedOperationException("Not yet implemented");
+        long id;
+        long result = -1;
+        switch (sUriMatcher.match(uri)){
+            case CODE_ALL_TASKS:
+                id = ContentUris.parseId(uri);
+                if (id != -1) {
+                    result = databaseWrite.update(DbHelper.TaskFields.TABLE_NAME, values,
+                            statementConjunction(selection, String.format(Locale.getDefault(), "%s=%d", DbHelper._ID, id)),
+                            null);
+                }
+            case CODE_ALL_TASKS_LOCATIONS:
+                id = ContentUris.parseId(uri);
+                if (id != -1) {
+                    result = databaseWrite.update(DbHelper.TasksLocationsFields.TABLE_NAME, values,
+                            statementConjunction(selection, String.format(Locale.getDefault(), "%s=%d", DbHelper._ID, id)),
+                            null);
+                }
+        }
+        if (getContext() != null){
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return (int) result;
     }
 
     protected String statementConjunction(String... statement){

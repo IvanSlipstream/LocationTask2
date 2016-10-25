@@ -92,4 +92,8 @@ public class TaskLocationRelation implements Parcelable {
     public long getId() {
         return mId;
     }
+
+    public void setRating(int rating) {
+        this.mRating = rating;
+    }
 }

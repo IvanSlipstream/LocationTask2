@@ -43,6 +43,7 @@ public class LocationTaskIntentService extends IntentService {
     private static final String ACTION_LOAD_BITMAPS = "ua.itstep.android11.kharlamov.locationtask.services.action.LOAD_BITMAPS";
     private static final String ACTION_LOAD_ALL_LOCATIONS_IN_AREA = "ua.itstep.android11.kharlamov.locationtask.services.action.LOAD_ALL_LOCATIONS_IN_AREA";
     private static final String ACTION_LOAD_BITMAP_BY_FILE_NAME = "ua.itstep.android11.kharlamov.locationtask.services.action.LOAD_BITMAP_BY_FILE_NAME";
+    private static final String ACTION_UPDATE_TASK = "ua.itstep.android11.kharlamov.locationtask.services.action.UPDATE_TASK";
 
     private static final String EXTRA_AREA_MAP = "ua.itstep.android11.kharlamov.locationtask.services.extra.AREA_MAP";
     private static final String EXTRA_LOCATION = "ua.itstep.android11.kharlamov.locationtask.services.extra.LOCATION";
@@ -114,6 +115,20 @@ public class LocationTaskIntentService extends IntentService {
     public static void startActionCreateTask(Context context, Task task, ResultReceiver receiver) {
         Intent intent = new Intent(context, LocationTaskIntentService.class);
         intent.setAction(ACTION_CREATE_TASK);
+        intent.putExtra(EXTRA_TASK, task);
+        intent.putExtra(EXTRA_RESULT_RECEIVER, receiver);
+        context.startService(intent);
+    }
+
+    /**
+     * Updates Task and its relation to Location instance to the database.
+     * Task must be already saved to the database
+     * @param context invoker context.
+     * @param task an instance to update.
+     */
+    public static void startActionUpdateTask(Context context, Task task, ResultReceiver receiver) {
+        Intent intent = new Intent(context, LocationTaskIntentService.class);
+        intent.setAction(ACTION_UPDATE_TASK);
         intent.putExtra(EXTRA_TASK, task);
         intent.putExtra(EXTRA_RESULT_RECEIVER, receiver);
         context.startService(intent);
@@ -193,7 +208,31 @@ public class LocationTaskIntentService extends IntentService {
                 final Task task = intent.getParcelableExtra(EXTRA_TASK);
                 handleActionCreateTask(task, receiver);
             }
+            if (ACTION_UPDATE_TASK.equals(action)){
+                final ResultReceiver receiver = intent.getParcelableExtra(EXTRA_RESULT_RECEIVER);
+                final Task task = intent.getParcelableExtra(EXTRA_TASK);
+                handleActionUpdateTask(task, receiver);
+            }
         }
+    }
+
+    private void handleActionUpdateTask(Task task, ResultReceiver receiver) {
+        TaskLocationRelation relation = task.getTaskLocationRelation();
+        ContentValues cv;
+        Uri uri;
+        Bundle bundle = new Bundle();
+        if (relation != null) {
+            cv = relation.makeContentValues();
+            uri = ContentUris.withAppendedId(LocationTaskContentProvider.URI_ALL_TASKS_LOCATIONS, relation.getId());
+            int relationId = getContentResolver().update(uri, cv, null, null);
+            Log.d("test", String.format("Saved relation #%d", relationId));
+            // TODO pass result
+        }
+        cv = task.makeContentValues();
+        uri = ContentUris.withAppendedId(LocationTaskContentProvider.URI_ALL_TASKS, task.getId());
+        int taskId = getContentResolver().update(uri,
+                cv, null, null);
+        Log.d("test", String.format("Saved relation #%d", taskId));
     }
 
     private void handleActionCreateTask(Task task, ResultReceiver receiver) {

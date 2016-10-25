@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RatingBar;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -80,7 +81,7 @@ public class TaskListLocationFragment extends Fragment {
     }
 
     public void setTaskList(ArrayList<Task> taskList) {
-        TaskAdapter adapter = new TaskAdapter(taskList);
+        TaskAdapter adapter = new TaskAdapter(mListener, taskList);
         mAdapter = adapter;
         if (mRvTaskList != null) {
             mRvTaskList.swapAdapter(adapter, false);
@@ -101,6 +102,6 @@ public class TaskListLocationFragment extends Fragment {
     }
 
     public interface OnFragmentInteractionListener{
-
+        void updateTask(Task task);
     }
 }

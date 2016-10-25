@@ -26,6 +26,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -278,5 +279,10 @@ public class TaskActivity extends AppCompatActivity
             }
             return null;
         }
+    }
+
+    @Override
+    public void updateTask(Task task){
+        LocationTaskIntentService.startActionUpdateTask(this, task, new ResultReceiver(new Handler()));
     }
 }

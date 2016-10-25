@@ -34,6 +34,7 @@ import ua.itstep.android11.kharlamov.locationtask.fragments.LocationSaveDialogFr
 import ua.itstep.android11.kharlamov.locationtask.fragments.TaskListLocationFragment;
 import ua.itstep.android11.kharlamov.locationtask.models.AreaMap;
 import ua.itstep.android11.kharlamov.locationtask.models.Location;
+import ua.itstep.android11.kharlamov.locationtask.models.Task;
 import ua.itstep.android11.kharlamov.locationtask.provider.LocationTaskContentProvider;
 import ua.itstep.android11.kharlamov.locationtask.services.LocationTaskIntentService;
 import ua.itstep.android11.kharlamov.locationtask.views.LocationView;
@@ -41,8 +42,7 @@ import ua.itstep.android11.kharlamov.locationtask.views.LocationView;
 public class AreaMapFullScreenActivity extends AppCompatActivity
         implements View.OnTouchListener,
         LoaderManager.LoaderCallbacks<Cursor>,
-        LocationSaveDialogFragment.OnFragmentInteractionListener,
-        TaskListLocationFragment.OnFragmentInteractionListener {
+        LocationSaveDialogFragment.OnFragmentInteractionListener {
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -358,4 +358,5 @@ public class AreaMapFullScreenActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
+
 }
